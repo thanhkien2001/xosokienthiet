@@ -1,0 +1,17 @@
+{
+  "name": "Xổ số",
+  "short_name": "Xoso",
+  "description": "Xổ số kiến thiết - Cập nhật kết quả xổ số 3 miền Bắc Trung Nam",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ed1c25",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    }
+  ]
+}
+

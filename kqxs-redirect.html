@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang=vi>
+<head>
+    <meta charset=UTF-8>
+    <title>Redirecting...</title>
+    <script>
+        // Extract date from current URL and redirect to dynamic page
+        (function() {
+            var path = window.location.pathname;
+            var match = path.match(/kqxs-(\d{2})-(\d{2})-(\d{4})\.html/);
+            if (match) {
+                var dateFormatted = match[1] + '-' + match[2] + '-' + match[3];
+                window.location.replace('/kqxs.html?date=' + dateFormatted);
+            } else {
+                // Fallback to today
+                var today = new Date();
+                var dateFormatted = String(today.getDate()).padStart(2, '0') + '-' + 
+                                   String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                                   today.getFullYear();
+                window.location.replace('/kqxs.html?date=' + dateFormatted);
+            }
+        })();
+    </script>
+</head>
+<body>
+    <p>Đang chuyển hướng...</p>
+</body>
+</html>
