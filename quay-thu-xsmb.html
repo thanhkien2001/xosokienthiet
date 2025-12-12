@@ -183,6 +183,15 @@
             }</script>
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6162392498535478" crossorigin=anonymous></script>
     <body>
+        <script>
+            // Clear stored state on each reload
+            try {
+                localStorage.clear();
+                sessionStorage.clear();
+            } catch (e) {
+                console.warn('Unable to clear storage', e);
+            }
+        </script>
         <header class=header>
             <div class=main-content>
                 <span class=btn-pushbar-3 data-pushbar-target=left>
@@ -1655,13 +1664,16 @@
                 
                 var arrRange = [];
                 
-                // Lấy số đặc biệt từ lần quay trước (giải 6, số thứ 2)
+                // Lấy số đặc biệt từ lần quay trước (giải 4, số thứ 3) -> lấy số đầu & cuối, cộng 2 và mod 10
                 var specialNumber = null;
-                var previousPrize6 = localStorage.getItem('previousPrize6');
-                if (previousPrize6 && previousPrize6.length >= 3) {
-                    var prevFirst = previousPrize6.charAt(0);
-                    var prevLast = previousPrize6.charAt(2);
-                    specialNumber = prevFirst + prevLast;
+                var previousPrize4Third = localStorage.getItem('previousPrize4Third');
+                if (previousPrize4Third && previousPrize4Third.length >= 4) {
+                    var prevFirst = parseInt(previousPrize4Third.charAt(0));
+                    var prevLast = parseInt(previousPrize4Third.charAt(3));
+                    // Cộng 2 và lấy modulo 10: 8+2=10->0, 9+2=11->1
+                    var newFirst = (prevFirst + 2) % 10;
+                    var newLast = (prevLast + 2) % 10;
+                    specialNumber = newFirst.toString() + newLast.toString();
                 }
                 
                 // Xác định vị trí xuất hiện của số đặc biệt
@@ -1676,14 +1688,38 @@
                     {prize: 8, count: 1, digits: 5}  // Giải ĐB
                 ];
                 
-                // Random vị trí xuất hiện của số đặc biệt
-                var specialPrize = specialNumber ? Math.floor(Math.random() * prizeStructure.length) : -1;
-                var specialPrizeIndex = specialNumber && specialPrize >= 0 ? Math.floor(Math.random() * prizeStructure[specialPrize].count) : -1;
+                // Xác định các vị trí sẽ đặt số đặc biệt
+                var specialSlots = new Set();
+                var specialCycle = parseInt(localStorage.getItem('specialCycle') || '0', 10);
+                var isBurst = ((specialCycle + 1) % 5 === 0); // mỗi 5 lượt thì burst
+                var specialSlotCount = specialNumber ? (isBurst ? 3 : 1) : 0;
+
+                if (specialSlotCount > 0) {
+                    var availableSlots = [];
+                    for (var p = 0; p <= 6; p++) { // chỉ giải 1->7
+                        for (var idx = 0; idx < prizeStructure[p].count; idx++) {
+                            availableSlots.push(p + '_' + idx);
+                        }
+                    }
+                    // Trộn ngẫu nhiên
+                    for (var s = availableSlots.length - 1; s > 0; s--) {
+                        var rand = Math.floor(Math.random() * (s + 1));
+                        var tmp = availableSlots[s];
+                        availableSlots[s] = availableSlots[rand];
+                        availableSlots[rand] = tmp;
+                    }
+                    for (var s = 0; s < specialSlotCount && s < availableSlots.length; s++) {
+                        specialSlots.add(availableSlots[s]);
+                    }
+                }
+
+                // Cập nhật chu kỳ (tính theo lượt quay)
+                localStorage.setItem('specialCycle', ((specialCycle + 1) % 5).toString());
                 var currentIndex = 0;
                 
                 // Giải 1 (1 kết quả, 5 chữ số) - index 0
                 for (var i = 0; i < prizeStructure[0].count; i++) {
-                    if (specialPrize === 0 && specialPrizeIndex === i && specialNumber) {
+                    if (specialSlots.has('0_' + i) && specialNumber) {
                         arrRange.push(getRandomStringWithSuffix(5, specialNumber));
                     } else {
                         arrRange.push(getRandomStringExclude(5, specialNumber));
@@ -1693,7 +1729,7 @@
                 
                 // Giải 2 (2 kết quả, 5 chữ số) - index 1-2
                 for (var i = 0; i < prizeStructure[1].count; i++) {
-                    if (specialPrize === 1 && specialPrizeIndex === i && specialNumber) {
+                    if (specialSlots.has('1_' + i) && specialNumber) {
                         arrRange.push(getRandomStringWithSuffix(5, specialNumber));
                     } else {
                         arrRange.push(getRandomStringExclude(5, specialNumber));
@@ -1703,7 +1739,7 @@
                 
                 // Giải 3 (6 kết quả, 5 chữ số) - index 3-8
                 for (var i = 0; i < prizeStructure[2].count; i++) {
-                    if (specialPrize === 2 && specialPrizeIndex === i && specialNumber) {
+                    if (specialSlots.has('2_' + i) && specialNumber) {
                         arrRange.push(getRandomStringWithSuffix(5, specialNumber));
                     } else {
                         arrRange.push(getRandomStringExclude(5, specialNumber));
@@ -1713,17 +1749,23 @@
                 
                 // Giải 4 (4 kết quả, 4 chữ số) - index 9-12
                 for (var i = 0; i < prizeStructure[3].count; i++) {
-                    if (specialPrize === 3 && specialPrizeIndex === i && specialNumber) {
-                        arrRange.push(getRandomStringWithSuffix(4, specialNumber));
+                    var prize4Value;
+                    if (specialSlots.has('3_' + i) && specialNumber) {
+                        prize4Value = getRandomStringWithSuffix(4, specialNumber);
                     } else {
-                        arrRange.push(getRandomStringExclude(4, specialNumber));
+                        prize4Value = getRandomStringExclude(4, specialNumber);
                     }
+                    // Lưu số thứ 3 của giải 4 (i == 2) cho lần quay sau
+                    if (i === 2) {
+                        localStorage.setItem('previousPrize4Third', prize4Value);
+                    }
+                    arrRange.push(prize4Value);
                     currentIndex++;
                 }
                 
                 // Giải 5 (6 kết quả, 4 chữ số) - index 13-18
                 for (var i = 0; i < prizeStructure[4].count; i++) {
-                    if (specialPrize === 4 && specialPrizeIndex === i && specialNumber) {
+                    if (specialSlots.has('4_' + i) && specialNumber) {
                         arrRange.push(getRandomStringWithSuffix(4, specialNumber));
                     } else {
                         arrRange.push(getRandomStringExclude(4, specialNumber));
@@ -1733,7 +1775,7 @@
                 
                 // Giải 6 (3 kết quả, 3 chữ số) - index 19-21
                 for (var i = 0; i < prizeStructure[5].count; i++) {
-                    if (specialPrize === 5 && specialPrizeIndex === i && specialNumber) {
+                    if (specialSlots.has('5_' + i) && specialNumber) {
                         arrRange.push(getRandomStringWithSuffix(3, specialNumber));
                     } else {
                         var result = getRandomStringExclude(3, specialNumber);
@@ -1748,7 +1790,7 @@
                 
                 // Giải 7 (4 kết quả, 2 chữ số) - index 22-25
                 for (var i = 0; i < prizeStructure[6].count; i++) {
-                    if (specialPrize === 6 && specialPrizeIndex === i && specialNumber) {
+                    if (specialSlots.has('6_' + i) && specialNumber) {
                         arrRange.push(specialNumber);
                     } else {
                         arrRange.push(getRandomStringExclude(2, specialNumber));
@@ -1756,12 +1798,8 @@
                     currentIndex++;
                 }
                 
-                // Giải đặc biệt (1 kết quả, 5 chữ số) - index 26
-                if (specialPrize === 7 && specialNumber) {
-                    arrRange.push(getRandomStringWithSuffix(5, specialNumber));
-                } else {
-                    arrRange.push(getRandomStringExclude(5, specialNumber));
-                }
+                // Giải đặc biệt (1 kết quả, 5 chữ số) - index 26 (không dùng số đặc biệt)
+                arrRange.push(getRandomStringExclude(5, specialNumber));
                 
                 // Display results with animation
                 var longQuayGifUrl = 'https://xoso.com.vn/images/long-quay.gif';
