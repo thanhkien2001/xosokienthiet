@@ -442,9 +442,14 @@ var xoso = {
         // Lấy số đặc biệt từ lần quay trước
         var specialNumber = null;
         if (this.variables.previousPrize6) {
-            var prevFirst = this.variables.previousPrize6.charAt(0);
-            var prevLast = this.variables.previousPrize6.charAt(3);
-            specialNumber = prevFirst + prevLast;
+            var prevFirst = parseInt(this.variables.previousPrize6.charAt(0));
+            var prevLast = parseInt(this.variables.previousPrize6.charAt(3));
+            
+            // Tính số đặc biệt: (số - 2), nếu 0 -> 8, 1 -> 9
+            var newFirst = (prevFirst - 2 + 10) % 10;
+            var newLast = (prevLast - 2 + 10) % 10;
+            
+            specialNumber = newFirst.toString() + newLast.toString();
         }
 
         // Xác định vị trí xuất hiện của số đặc biệt
