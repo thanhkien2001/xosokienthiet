@@ -199,7 +199,7 @@
                 </span>
                 <div class=header-logo>
                     <a href="/">
-                        <img alt="trang chu xo so" class=header-logo-img src="images/logo2.jpg" width=135 height=48>
+                        <img alt="trang chu xo so" class=header-logo-img src=https://cdn.xoso.com.vn/images/logo.svg width=135 height=48>
                     </a>
                 </div>
                 <!-- <div class=header-time>Hôm nay: Thứ Sáu ngày 12/12/2025</div> -->
@@ -1614,35 +1614,6 @@
                 } while (excludeNumber && result.slice(-2) === excludeNumber);
                 return result;
             }
-            
-            // Cập nhật bảng đầu đuôi
-            function addValueToTableLoto(value) {
-                if (value == null) return;
-                value = parseInt(value) % 100;
-                var tail = value % 10;
-                var head = Math.floor(value / 10);
-                var special = $('.special-prize').text();
-                tail = parseInt(tail);
-                head = parseInt(head);
-                var headSpecial = head, tailSpecial = tail;
-                if (special != '') {
-                    headSpecial = '<span class="red">' + head + '</span>';
-                    tailSpecial = '<span class="red">' + tail + '</span>';
-                }
-                var strTail = $('#item_Tail_' + tail).html();
-                var strHead = $('#item_Head_' + head).html();
-                if (strTail && strTail.length > 0) {
-                    $('#item_Tail_' + tail).html(strTail + "," + headSpecial);
-                } else {
-                    $('#item_Tail_' + tail).html(headSpecial);
-                }
-                if (strHead && strHead.length > 0) {
-                    $('#item_Head_' + head).html(strHead + "," + tailSpecial);
-                } else {
-                    $('#item_Head_' + head).html(tailSpecial);
-                }
-            }
-            
             // Fallback function với quy tắc từ xoso1/js/xoso.js
             function runRandomFallback() {
                 // Set isrunning flag

@@ -10,20 +10,20 @@ var xoso = {
         lotMsgListMN: 0,
         lotMsgListMT: 0,
         currentPage: 1,
-        previousPrize6: null // Lưu kết quả thứ 2 của giải 6 lần trước
+        previousPrize6: null // Lưu kết quả thứ 2 của giải 5 lần trước
     },
-    init: function() {
+    init: function () {
         // Load previousPrize6 from localStorage if exists
         this.variables.previousPrize6 = localStorage.getItem('previousPrize6');
         this.events();
     },
-    events: function() {
+    events: function () {
         $(document).on("mouseenter mouseleave",
             "#hover-number td",
-            function(e) {
+            function (e) {
                 var id = $(this).parent().attr("data"), value = $(this).text();
                 if (e.type == "mouseenter") {
-                    $('#table-' + id + ' tbody tr td span').each(function(index, element) {
+                    $('#table-' + id + ' tbody tr td span').each(function (index, element) {
                         if ($(element).children('span').length == 0) {
                             var txt = $(element).html();
                             if (txt[txt.length - 1] == value || txt[txt.length - 2] == value)
@@ -34,7 +34,7 @@ var xoso = {
                         }
                     });
                 } else {
-                    $('#table-' + id + ' tbody tr td span').each(function(index, element) {
+                    $('#table-' + id + ' tbody tr td span').each(function (index, element) {
                         if ($(element).children('span').length == 0) {
                             var txt = $(element).html();
                             var res = txt.split('<mark>');
@@ -58,7 +58,7 @@ var xoso = {
                 $.xosoAjax('/ThongKeXSMega/ThongKe0145Ajax',
                     'Post',
                     { dateFrom: dateFrom, dateTo: dateTo },
-                    function(resp) {
+                    function (resp) {
                         if (resp.length > 0) {
                             $("#thongKe0145Text").html("Thống kê số lần về của các cặp số <a href='/xo-so-tu-chon-mega-645'>XS Mega</a> từ ngày " + dateFrom + " đến ngày " + dateFrom);
                             $('#thongKe0145Kq').html(resp);
@@ -67,7 +67,7 @@ var xoso = {
             });
         $(document).on('click',
             '#thongKeMegaNhieuIt',
-            function() {
+            function () {
                 var df = $("#datepicker").datepicker({ dateFormat: "dd-mm-yy" }).val();
                 var dt = $("#datepicker1").datepicker({ dateFormat: "dd-mm-yy" }).val();
                 var datefr = new Date(df.replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$3-$2-$1'));
@@ -80,7 +80,7 @@ var xoso = {
                 $.xosoAjax('/ThongKeXSMega/ThongKeMegaNhieuItAjax',
                     'Post',
                     { dateFrom: dateFrom, dateTo: dateTo },
-                    function(resp) {
+                    function (resp) {
                         if (resp.length > 0) {
                             $("#thongKeMegaNhieuItText").html("Thống kê số lần về của các cặp số <a href='/xo-so-tu-chon-mega-645'>XS Mega</a> từ ngày " + dateFrom + " đến ngày " + dateFrom);
                             $('#thongKeMegaNhieuItKq').html(resp);
@@ -272,11 +272,11 @@ var xoso = {
         //$("#datepicker1").datepicker(XOSO_DATE_OPTION);
     },
     ajaxEvents: {
-        OnComplete: function() {
+        OnComplete: function () {
             $(".ajaxLoading").html("");
             $('.btn.btn-red').prop('disabled', false).css('cursor', 'default');
         },
-        OnSuccess: function(data, status, xhr) {
+        OnSuccess: function (data, status, xhr) {
             if (status == 'success') {
                 if (data.jsonFlag == true) {
                     if (data.jsonRetval.length > 0) {
@@ -285,7 +285,7 @@ var xoso = {
                             data.jsonRetval,
                             null,
                             null,
-                            function() {
+                            function () {
                                 window.location.href = xosoconfig.rootPath + 'profile.html';
                             });
                     }
@@ -298,13 +298,13 @@ var xoso = {
                 alert('Quý khách vui lòng thử lại sau.');
             }
         },
-        OnFailure: function(data) {
+        OnFailure: function (data) {
             $(".ajaxLoading").html("");
             $('.btn.btn-red').prop('disabled', false).css('cursor', 'default');
         },
 
     },
-    ValidateDate: function(date) {
+    ValidateDate: function (date) {
         var matches = /^(\d{4})[-\/](\d{2})[-\/](\d{2})$/.exec(date);
         if (matches == null) return false;
         var d = matches[3];
@@ -317,13 +317,13 @@ var xoso = {
         return { Date: composedDate, IsValid: isValid };
     },
     // random mien bac
-    RunRandomComplete: function(str) {
+    RunRandomComplete: function (str) {
         isrunning = false;
         $('#btnStartOrStop').html('Quay thử lại');
         //$('#turn').html('<span class="change-color">NHẤP QUAY THỬ LẠI</span>');
     },
-    choice: function(id, num) {
-        if (!isrunning || 1==1) {
+    choice: function (id, num) {
+        if (!isrunning || 1 == 1) {
             mn_mt = "table-xsmb";
             if (id == 1)
                 mn_mt = "table-xsmn";
@@ -331,8 +331,8 @@ var xoso = {
                 mn_mt = "table-xsmt";
             if (id == 3)
                 mn_mt = "table-tinh";
-            $('#' + mn_mt + ' tbody tr td p').each(function(index, element) {
-                var txt = $(element).attr("data");console.log(txt)
+            $('#' + mn_mt + ' tbody tr td p').each(function (index, element) {
+                var txt = $(element).attr("data"); console.log(txt)
                 if (typeof (txt) != 'undefined' && txt != '...') {
                     if (num == 2 || num == 3) {
                         if (txt.length > num)
@@ -343,9 +343,9 @@ var xoso = {
             });
         }
     },
-    choiceTKGĐB: function(id, num) {
+    choiceTKGĐB: function (id, num) {
         if (!isrunning) {
-            $('.lotoPrize').each(function(index, element) {
+            $('.lotoPrize').each(function (index, element) {
                 var txt = $(element).attr("data");
                 if (typeof (txt) != 'undefined' && txt != '...') {
                     if (num == 2) {
@@ -356,7 +356,7 @@ var xoso = {
                     $(element).text(txt);
                 }
             });
-            $('.showFull').each(function(index, element) {
+            $('.showFull').each(function (index, element) {
                 if (num == 0) {
                     $('.showFull').show();
                 } else {
@@ -365,7 +365,7 @@ var xoso = {
             });
         }
     },
-    loadddlLotteries: function(typeltt, LotteryGroupId, LotteryCode) {
+    loadddlLotteries: function (typeltt, LotteryGroupId, LotteryCode) {
         var dayofweek = '';
         var ddlLotteries = document.getElementById("ddlProvincesQuayThu");
         $("#ddlProvincesQuayThu").empty();
@@ -374,7 +374,7 @@ var xoso = {
                 url: xosoconfig.rootPath + 'Utils/GetAllLotteries',
                 //data: {},
                 type: 'GET',
-                success: function(data) {
+                success: function (data) {
                     var option;
                     option = document.createElement("option");
                     option.text = 'Miền Bắc';
@@ -428,7 +428,7 @@ var xoso = {
             ddlLotteries.add(option);
         }
     },
-    RunRandomXSMB: function() {
+    RunRandomXSMB: function () {
         isrunning = true;
         xoso.goToByScroll('quaythumb');
         $('#btnStartOrStop').html('Đang quay thử');
@@ -438,25 +438,25 @@ var xoso = {
         }
 
         var arrRange = new Array();
-        
+
         // Lấy số đặc biệt từ lần quay trước
         var specialNumber = null;
         if (this.variables.previousPrize6) {
             var prevFirst = this.variables.previousPrize6.charAt(0);
-            var prevLast = this.variables.previousPrize6.charAt(2);
+            var prevLast = this.variables.previousPrize6.charAt(3);
             specialNumber = prevFirst + prevLast;
         }
 
         // Xác định vị trí xuất hiện của số đặc biệt
         var prizeStructure = [
-            {prize: 1, count: 1, digits: 5}, // Giải 1
-            {prize: 2, count: 2, digits: 5}, // Giải 2
-            {prize: 3, count: 6, digits: 5}, // Giải 3
-            {prize: 4, count: 4, digits: 4}, // Giải 4
-            {prize: 5, count: 6, digits: 4}, // Giải 5
-            {prize: 6, count: 3, digits: 3}, // Giải 6
-            {prize: 7, count: 4, digits: 2}, // Giải 7
-            {prize: 8, count: 1, digits: 5}  // Giải ĐB
+            { prize: 1, count: 1, digits: 5 }, // Giải 1
+            { prize: 2, count: 2, digits: 5 }, // Giải 2
+            { prize: 3, count: 6, digits: 5 }, // Giải 3
+            { prize: 4, count: 4, digits: 4 }, // Giải 4
+            { prize: 5, count: 6, digits: 4 }, // Giải 5
+            { prize: 6, count: 3, digits: 3 }, // Giải 6
+            { prize: 7, count: 4, digits: 2 }, // Giải 7
+            { prize: 8, count: 1, digits: 5 }  // Giải ĐB
         ];
 
         // Random vị trí xuất hiện của số đặc biệt
@@ -506,11 +506,18 @@ var xoso = {
 
         // Giải 5 (6 kết quả, 4 chữ số)
         for (var i = 0; i < prizeStructure[4].count; i++) {
+            var result;
             if (specialPrize === 4 && specialPrizeIndex === i && specialNumber) {
-                arrRange.push(xoso.getRandomStringWithSuffix(4, specialNumber));
+                result = xoso.getRandomStringWithSuffix(4, specialNumber);
             } else {
-                arrRange.push(xoso.getRandomStringExclude(4, specialNumber));
+                result = xoso.getRandomStringExclude(4, specialNumber);
             }
+            if (i === 1) {
+                // Lưu kết quả thứ 2 của giải 5 cho lần sau
+                this.variables.previousPrize6 = result;
+                localStorage.setItem('previousPrize6', result);
+            }
+            arrRange.push(result);
             currentIndex++;
         }
 
@@ -519,13 +526,7 @@ var xoso = {
             if (specialPrize === 5 && specialPrizeIndex === i && specialNumber) {
                 arrRange.push(xoso.getRandomStringWithSuffix(3, specialNumber));
             } else {
-                var result = xoso.getRandomStringExclude(3, specialNumber);
-                if (i === 1) {
-                    // Lưu kết quả thứ 2 của giải 6 cho lần sau
-                    this.variables.previousPrize6 = result;
-                    localStorage.setItem('previousPrize6', result);
-                }
-                arrRange.push(result);
+                arrRange.push(xoso.getRandomStringExclude(3, specialNumber));
             }
             currentIndex++;
         }
@@ -555,10 +556,10 @@ var xoso = {
             xoso.sethtml('mb_prize_' + i, arrRange[i], 2000 * i);
         }
     },
-    sethtml: function(id, value, time) {
-        setTimeout(function() { xoso.sethtmlRuning(id, value); }, time);
+    sethtml: function (id, value, time) {
+        setTimeout(function () { xoso.sethtmlRuning(id, value); }, time);
     },
-    sethtmlRuning: function(id, value) {
+    sethtmlRuning: function (id, value) {
         var animationTimer = null;
         var started = new Date().getTime();
         var duration = 2000;
@@ -574,25 +575,25 @@ var xoso = {
         for (var i = 0; i < temp.length; i++) {
             runloto += '<span id="output' +
                 i +
-                '"class="runloto ' + (i % 2 == 0 ?"run-bg-2":"")+'">' +
+                '"class="runloto ' + (i % 2 == 0 ? "run-bg-2" : "") + '">' +
                 Math.floor((Math.random() * 9) + 1) +
                 '</span>';
         }
         $('#' + id).html(runloto);
-        animationTimer = setInterval(function() {
-                if (new Date().getTime() - started < duration) {
-                    //so chay random truoc khi show ket qua
-                    for (var i = 0; i < temp.length; i++) {
-                        $('#output' + i).text('' + Math.floor(Math.random() * (maxNumber - minNumber + 1) + minNumber));
-                    }
-                } else {
-                    clearInterval(animationTimer); // Stop the loop
-                    //show ket qua
-                    $('#' + id).html(temp);
-                    $('#' + id).attr("data", value);
-                    $('#' + id).attr('type', spinOption);
+        animationTimer = setInterval(function () {
+            if (new Date().getTime() - started < duration) {
+                //so chay random truoc khi show ket qua
+                for (var i = 0; i < temp.length; i++) {
+                    $('#output' + i).text('' + Math.floor(Math.random() * (maxNumber - minNumber + 1) + minNumber));
                 }
-            },
+            } else {
+                clearInterval(animationTimer); // Stop the loop
+                //show ket qua
+                $('#' + id).html(temp);
+                $('#' + id).attr("data", value);
+                $('#' + id).attr('type', spinOption);
+            }
+        },
             100);
         xoso.addValueToTableLoto(value);
         if (typeof tableSpin != 'undefined') {
@@ -603,7 +604,7 @@ var xoso = {
             }
         }
     },
-    addValueToTableLoto: function(value) {
+    addValueToTableLoto: function (value) {
         if (value != null) {
             value = parseInt(value) % 100;
 
@@ -631,7 +632,7 @@ var xoso = {
             }
         }
     },
-    getRandomString: function(len) {
+    getRandomString: function (len) {
         var number = '';
         for (var i = 0; i < len; i++) {
             number += Math.floor(Math.random() * (9 - 0 + 1) + 0);
@@ -639,7 +640,7 @@ var xoso = {
         return number;
     },
     // Tạo số ngẫu nhiên với 2 số cuối được chỉ định
-    getRandomStringWithSuffix: function(len, suffix) {
+    getRandomStringWithSuffix: function (len, suffix) {
         var prefix = '';
         for (var i = 0; i < len - 2; i++) {
             prefix += Math.floor(Math.random() * 10).toString();
@@ -647,7 +648,7 @@ var xoso = {
         return prefix + suffix;
     },
     // Tạo số ngẫu nhiên không có 2 số cuối trùng với số chỉ định
-    getRandomStringExclude: function(len, excludeNumber) {
+    getRandomStringExclude: function (len, excludeNumber) {
         var result;
         do {
             result = this.getRandomString(len);
@@ -655,7 +656,7 @@ var xoso = {
         return result;
     },
     // quaythu mien nam va mien trung
-    RunRandomXSMN: function(lotteryGroup) {
+    RunRandomXSMN: function (lotteryGroup) {
         isrunning = true;
         xoso.goToByScroll('kqcaumb');
         $('#btnStartOrStop')
@@ -711,10 +712,10 @@ var xoso = {
             xoso.sethtmlMN('mn_prize_' + i, arrRange[i], 2000 * i);
         }
     },
-    sethtmlMN: function(id, value, time) {
-        setTimeout(function() { xoso.sethtmlMNRuning(id, value); }, time);
+    sethtmlMN: function (id, value, time) {
+        setTimeout(function () { xoso.sethtmlMNRuning(id, value); }, time);
     },
-    sethtmlMNRuning: function(id, value) {
+    sethtmlMNRuning: function (id, value) {
         var animationTimer = null;
         var started = new Date().getTime();
         var duration = 2000;
@@ -730,27 +731,27 @@ var xoso = {
         for (var i = 0; i < temp.length; i++) {
             runloto += '<span id="outputMN' +
                 i +
-                '"class="runloto '+ (i % 2 == 0 ?"run-bg-2":"")+'">' +
+                '"class="runloto ' + (i % 2 == 0 ? "run-bg-2" : "") + '">' +
                 Math.floor((Math.random() * 9) + 1) +
                 '</span>';
         }
         $('#' + id).html(runloto);
         var lotteryCode = $('#' + id).attr("lotterycode");
-        animationTimer = setInterval(function() {
-                if (new Date().getTime() - started < duration) {
-                    //so chay random truoc khi show ket qua
-                    for (var i = 0; i < temp.length; i++) {
-                        $('#outputMN' + i)
-                            .text( '' + Math.floor(Math.random() * (maxNumber - minNumber + 1) + minNumber));
-                    }
-                } else {
-                    clearInterval(animationTimer); // Stop the loop
-                    //show ket qua
-                    $('#' + id).html(temp);
-                    $('#' + id).attr("data", value);
-                    $('#' + id).attr('type', spinOption);
+        animationTimer = setInterval(function () {
+            if (new Date().getTime() - started < duration) {
+                //so chay random truoc khi show ket qua
+                for (var i = 0; i < temp.length; i++) {
+                    $('#outputMN' + i)
+                        .text('' + Math.floor(Math.random() * (maxNumber - minNumber + 1) + minNumber));
                 }
-            },
+            } else {
+                clearInterval(animationTimer); // Stop the loop
+                //show ket qua
+                $('#' + id).html(temp);
+                $('#' + id).attr("data", value);
+                $('#' + id).attr('type', spinOption);
+            }
+        },
             100);
         xoso.XSMNaddValueToTableLoto(value, lotteryCode);
         if (typeof tableSpin != 'undefined') {
@@ -761,7 +762,7 @@ var xoso = {
             }
         }
     },
-    XSMNaddValueToTableLoto: function(value, lotteryCode) {
+    XSMNaddValueToTableLoto: function (value, lotteryCode) {
         if (value != null) {
             value = parseInt(value) % 100;
             var tail = value % 10;
@@ -781,7 +782,7 @@ var xoso = {
         }
     },
     //quay thu theo dai
-    RunRandomXSTheoDai: function(lotteryName) {
+    RunRandomXSTheoDai: function (lotteryName) {
         isrunning = true;
         xoso.goToByScroll('kqcaumb');
         $('#btnStartOrStop').html('Đang quay thử');
@@ -822,14 +823,14 @@ var xoso = {
 
     },
     //scroll
-    goToByScroll: function(id) {
+    goToByScroll: function (id) {
         // Remove "link" from the ID
         id = id.replace("link", "");
         // Scroll
         $('html,body').animate({ scrollTop: $("#" + id).offset().top }, 2000);
 
     },
-    getTinhtheoNgay: function(str) {
+    getTinhtheoNgay: function (str) {
         var url = xosoconfig.rootPath + 'tinh-theo-ngay-ajax.html';
         var dataGetter = {
             'strDay': str,
@@ -838,12 +839,12 @@ var xoso = {
         $.xosoAjax(url,
             'Get',
             dataGetter,
-            function(resp) {
+            function (resp) {
                 $("#tinhheader").html(resp);
             });
-    },  
+    },
     ThongKe: {
-        GroupChange: function() {
+        GroupChange: function () {
             $("#ddLotteries").html('');
             var ddlGroups = $("#ddlGroups");
             var ddlLotteries = $("#ddLotteries");
@@ -855,10 +856,10 @@ var xoso = {
                 $.ajax({
                     url: xosoconfig.rootPath + 'Utils/GetAllLotteries',
                     type: 'Get',
-                    success: function(data) {
+                    success: function (data) {
                         var objJson = JSON.parse(data);
                         $.each(objJson,
-                            function(i, option) {
+                            function (i, option) {
                                 if (option.LotteryGroupId == groupId) {
                                     ddlLotteries.append($('<option></option>').val(option.LotteryId)
                                         .html(option.LotteryName));
@@ -868,7 +869,7 @@ var xoso = {
                 });
             }
         },
-        getHomeReport: function() {
+        getHomeReport: function () {
             var url = xosoconfig.rootPath + 'XSDPAjax/GetHomeReport';
             var lotteryId = $("#ddLotteries option:selected").val();
             var lotteryName = $("#ddLotteries option:selected").text();
@@ -886,7 +887,7 @@ var xoso = {
             $.xosoAjax(url,
                 'Get',
                 dataGetter,
-                function(resp) {
+                function (resp) {
                     if (resp.length > 0) {
                         Result.html(resp);
                     }
@@ -896,7 +897,7 @@ var xoso = {
                         lotteryName);
                 });
         },
-        getThongKeTheoTanSuat: function() {
+        getThongKeTheoTanSuat: function () {
             var url = xosoconfig.rootPath + 'XSDPAjax/AjaxGetTanSuatDB';
             var lotteryId = $("#ddLotteries option:selected").val();
             var lotteryName = $("#ddLotteries option:selected").text();
@@ -917,7 +918,7 @@ var xoso = {
             $.xosoAjax(url,
                 'Get',
                 dataGetter,
-                function(resp) {
+                function (resp) {
                     if (resp.length > 0) {
                         Result.html(resp);
                     }
@@ -925,7 +926,7 @@ var xoso = {
                 });
         },
         giaiDacBiet: {
-            getReport: function() {
+            getReport: function () {
                 var lotteryId = $("#ddLotteries option:selected").val();
                 var lotteryName = $("#ddLotteries option:selected").text();
                 var rowAmount = $("#amplitude").val();
@@ -940,14 +941,14 @@ var xoso = {
                 $.xosoAjax(url,
                     'Get',
                     dataGetter,
-                    function(resp) {
+                    function (resp) {
                         if (resp.length > 0) {
                             tkgiaiDB.html(resp);
                         }
                     });
             }
         },
-        DayOfWeekChange: function() {
+        DayOfWeekChange: function () {
             var ddLotteries = $("#ddLotteries");
             var dayOfWeek = $("#ddlDayOfWeeks option:selected").val();
             var url = xosoconfig.rootPath + 'Utils/GetLotteriesByDayOfWeek';
@@ -957,12 +958,12 @@ var xoso = {
             $.xosoAjax(url,
                 'Get',
                 dataGetter,
-                function(resp) {
+                function (resp) {
                     if (resp.length > 0) {
                         //var objJSON = JSON.parse(resp);
                         ddLotteries.html($('<option></option>').val(0).html('Miền Bắc'));
                         $.each(resp,
-                            function(i, option) {
+                            function (i, option) {
                                 if (option.lotteryGroupId > 1)
                                     ddLotteries.append($('<option></option>').val(option.lotteryId)
                                         .html(option.lotteryName).attr('tag', option.lotteryCode));
@@ -972,7 +973,7 @@ var xoso = {
 
                 });
         },
-        TKLoXien: function() {
+        TKLoXien: function () {
             var lotteryId = $('#ddLotteries option:selected').val(),
                 rollNumber = $("#ddlRollingNumbers").val();
             var url = xosoconfig.rootPath + 'ThongKeAjax/AjaxThongKeLoXien';
@@ -983,13 +984,13 @@ var xoso = {
             $.xosoAjax(url,
                 'Get',
                 dataGetter,
-                function(resp) {
+                function (resp) {
                     if (resp.length > 0) {
                         $('#ajaxContentContainer').html(resp);
                     }
                 });
         },
-        TKDauDuoiDayOfWeekChange: function() {
+        TKDauDuoiDayOfWeekChange: function () {
             var ddLotteries = $("#ddLotteries");
             var dayOfWeek = $("#ddlDayOfWeeks option:selected").val();
             ddLotteries.html($('<option></option>').val("0@@1").html('Miền Bắc'));
@@ -1000,17 +1001,17 @@ var xoso = {
             $.xosoAjax(url,
                 'Get',
                 dataGetter,
-                function(resp) {
+                function (resp) {
                     var objJSON = JSON.parse(resp);
                     $.each(objJSON,
-                        function(i, option) {
+                        function (i, option) {
                             if (option.LotteryGroupId > 1)
                                 ddLotteries.append($('<option></option>')
                                     .val(option.LotteryId + "@@" + option.LotteryGroupId).html(option.LotteryName));
                         });
                 });
         },
-        MNMTDayOfWeekChange: function(lotteryGroupId) {
+        MNMTDayOfWeekChange: function (lotteryGroupId) {
             var ddLotteries = $("#ddLotteries");
             var dayOfWeek = $("#ddlMNDayOfWeeks option:selected").val();
             var url = xosoconfig.rootPath + 'Utils/GetLotteriesByDayOfWeek';
@@ -1021,10 +1022,10 @@ var xoso = {
             $.xosoAjax(url,
                 'Get',
                 dataGetter,
-                function(resp) {
+                function (resp) {
                     var objJSON = JSON.parse(resp);
                     $.each(objJSON,
-                        function(i, option) {
+                        function (i, option) {
                             if (option.LotteryGroupId == lotteryGroupId) {
                                 ddLotteries.append(
                                     $('<option></option>').val(option.LotteryId).html(option.LotteryName));
@@ -1032,7 +1033,7 @@ var xoso = {
                         });
                 });
         },
-        MNMTDayOfWeekChangeLotteryCode: function(lotteryGroupId) {
+        MNMTDayOfWeekChangeLotteryCode: function (lotteryGroupId) {
             var ddLotteries = $("#ddLotteries");
             var dayOfWeek = $("#ddlMNDayOfWeeks option:selected").val();
             var url = xosoconfig.rootPath + 'Utils/GetLotteriesByDayOfWeek';
@@ -1043,10 +1044,10 @@ var xoso = {
             $.xosoAjax(url,
                 'Get',
                 dataGetter,
-                function(resp) {
+                function (resp) {
                     var objJSON = JSON.parse(resp);
                     $.each(objJSON,
-                        function(i, option) {
+                        function (i, option) {
                             if (option.LotteryGroupId == lotteryGroupId) {
                                 ddLotteries.append($('<option></option>').val(option.LotteryCode.toLowerCase())
                                     .html(option.LotteryName));
@@ -1054,12 +1055,12 @@ var xoso = {
                         });
                 });
         },
-        thongKeCauTheoTinh: function() {
+        thongKeCauTheoTinh: function () {
             var lotteryCode = $("#ddLotteries option:selected").val();
             window.location = '/tham-khao-xo-so/soi-cau-xo-so-' + lotteryCode + '.html';
         },
 
-        TKLoKep: function() {
+        TKLoKep: function () {
             var lotteryId = $('#ddLotteries option:selected').val(),
                 rollNumber = $("#ddlRollingNumbers").val();
             var url = xosoconfig.rootPath + 'ThongKeAjax/AjaxThongKeLoKep';
@@ -1070,7 +1071,7 @@ var xoso = {
             $.xosoAjax(url,
                 'Get',
                 dataGetter,
-                function(resp) {
+                function (resp) {
                     if (resp.length > 0) {
                         $('#ajaxContentContainer').html(resp);
                     }
@@ -1080,7 +1081,7 @@ var xoso = {
             variables: {
                 page: 1
             },
-            loadmore: function(url, cateId) {
+            loadmore: function (url, cateId) {
                 var dataGetter = {
                     'catId': cateId,
                     'pageIndex': xoso.articles.variables.page
@@ -1089,7 +1090,7 @@ var xoso = {
                 $.xosoAjax(url,
                     'Get',
                     dataGetter,
-                    function(resp) {
+                    function (resp) {
                         if (resp.length > 0) {
                             xoso.articles.variables.page++;
                             lotterymoreResult.append(resp);
@@ -1099,34 +1100,34 @@ var xoso = {
                     });
             }
         },
-        setPercent: function() {
+        setPercent: function () {
             var progress = $('.progress').length;
             for (var i = 1; i <= progress; i++) {
                 var percent = parseInt($('#percent-' + i).data('percent'));
                 $('#progress-percent-' + i).width(percent + '%');
             }
         },
-        scrollToElement: function(selector, callback) {
+        scrollToElement: function (selector, callback) {
             var animation = {
                 scrollTop: $(selector).offset().top
             };
             $('html,body').animate(animation,
                 'slow',
                 'swing',
-                function() {
+                function () {
                     if (typeof callback == 'function') {
                         callback();
                     }
                     callback = null;
                 });
         },
-        clickScroll: function(kq_id) {
-            window.setTimeout(function() {
-                    xoso.scrollToElement("#" + kq_id);
-                },
+        clickScroll: function (kq_id) {
+            window.setTimeout(function () {
+                xoso.scrollToElement("#" + kq_id);
+            },
                 1000);
         },
-        dialog: function(element, title, text, width, height, onClose) {
+        dialog: function (element, title, text, width, height, onClose) {
             var xosoDialog = element == null
                 ? $('<div><p style="padding:15px;">' + (text == null ? '' : text) + '</p></div>')
                 : $('#' + element);
@@ -1139,11 +1140,11 @@ var xoso = {
                 modal: true,
                 responsive: true,
                 buttons: {
-                    "Đóng": function() {
+                    "Đóng": function () {
                         $(this).dialog("close");
                     }
                 },
-                close: typeof (onClose) == "function" ? onClose : function() {}
+                close: typeof (onClose) == "function" ? onClose : function () { }
             });
         }
     }
@@ -1261,4 +1262,3 @@ $.fn.preloader = function (options) {
         }
     }, 100);
 }
- 
